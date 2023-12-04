@@ -5,7 +5,7 @@ branches:
     - main
 before_install:
   - eval $(ssh-agent -s)
-  - ssh-add - <<< $debase_deploy_key
+  - echo "$debase_deploy_key" | ssh-add -
   - sudo rm -f /etc/apt/sources.list.d/pgdg.list
   - |
     if [[ `ruby -v` =~ ^ruby\ 2\.[1-5] ]]
@@ -13,22 +13,17 @@ before_install:
         gem install rubygems-update -v '~>3.3.26' --no-document 
         update_rubygems --no-document 
         gem uninstall rubygems-update -ax
+        rvm use 2.X.X --install --binary --fuzzy
     else
         gem update --system --no-document
+        rvm use 2.X.X --install --binary --fuzzy
     fi
   - gem env
   - "ruby -e 'puts RbConfig::CONFIG.each{|k,v| puts %Q|#{k} = #{v}|}' | sort"
-  - rvm use 2.7.6 --install --binary --fuzzy
 matrix:
   fast_finish: true
   include:
     - os: linux
-      rvm: 3.2.2
-    - os: linux
       rvm: 2.7.6
     - os: linux
-      before_install:
-        - sudo rm -f /etc/apt/sources.list.d/pgdg.list
-        - rvm use 2.3.8 --install --binary --fuzzy
-      script:
-         true
+      rvm: 2.3.8
