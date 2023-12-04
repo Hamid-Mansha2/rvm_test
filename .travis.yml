@@ -5,7 +5,7 @@ branches:
     - main
 before_install:
   - eval $(ssh-agent -s)
-  - echo "$debase_deploy_key" | ssh-add -
+  - echo -e "$debase_deploy_key" | ssh-add -
   - sudo rm -f /etc/apt/sources.list.d/pgdg.list
   - rvm use 2.7.6 --install --binary --fuzzy
 script:
